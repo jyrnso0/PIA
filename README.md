@@ -113,6 +113,7 @@ La URL pública verificada es <https://pia-ndd7.onrender.com>. El 6 de noviembre
 | OpenAPI | `docs/api/openapi.json` (regenerable con `scripts/export_openapi.py`; UI en `/docs`) |
 | Trazabilidad BR→US→código→pruebas | `docs/traceability.md`, `docs/traceability.csv` |
 | Evidencias | `docs/evidence/` |
+| Presentación final del equipo | `docs/Presentacion-PIA-AulaPlus.pptx` |
 | Evidencia de validación y estado de CI/CD | `docs/evidence/Final_Validation.md` |
 | Reporte final del PIA (PDF) | `docs/Reporte_Final_PIA.pdf` |
 | Reporte de arquitectura original (PDF) | `docs/source/Architecture_Report_AulaPlus.pdf` |
