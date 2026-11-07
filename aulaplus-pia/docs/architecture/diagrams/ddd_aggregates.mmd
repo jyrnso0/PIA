@@ -1,0 +1,42 @@
+flowchart LR
+  subgraph API["API (FastAPI)"]
+    R[Routers + Schemas]
+  end
+  subgraph APP["Application (Service Layer)"]
+    B[BookingService]
+    S[SessionService]
+    D[DisputeService]
+    T[TutorService]
+    N[NotificationService]
+    Q[DashboardService]
+  end
+  subgraph DOM["Domain"]
+    direction TB
+    subgraph AR["Aggregates"]
+      Reserva
+      Sesion
+      Pago
+      Disputa
+      Tutor
+      Estudiante
+    end
+    VO["Value Objects:<br/>Money, Schedule, PaymentDeadline,<br/>PaymentBreakdown, Cancellation, Penalty, Evidence, Rating"]
+    SPEC["Specifications (&, |, ~)"]
+    SM["StateMachine"]
+    DS["Domain Services:<br/>OverlapValidator, RefundCalculator"]
+    EV["Domain Events"]
+  end
+  subgraph INF["Infrastructure"]
+    UOW[SqlUnitOfWork + Outbox]
+    REPO[Sql Repositories]
+    ORM[(PostgreSQL / SQLite)]
+    PG[FakePaymentGateway]
+    RM[SqlDashboardReadModel]
+  end
+  R --> B & S & D & T & N & Q
+  B & S & D & T --> AR
+  AR --> VO & SPEC & SM & EV
+  S & B --> DS
+  B & S & D & T --> UOW --> REPO --> ORM
+  B --> PG
+  Q --> RM --> ORM
