@@ -53,12 +53,14 @@ jobs:
 
   deploy:
     needs: [test, docker]
+    defaults:
+      run:
+        working-directory: .
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     env:
       RENDER_BASE_URL: ${{ vars.RENDER_BASE_URL }}
     steps:
-      - uses: actions/checkout@v4
       - name: Validate Render URL configuration
         shell: bash
         run: |
