@@ -1,0 +1,6 @@
+stateDiagram-v2
+  direction LR
+  [*] --> pendiente
+  pendiente --> confirmado: confirm
+  confirmado --> reembolsado: refund (motivo + evidencia + responsable)
+  confirmado --> liquidado: settle
