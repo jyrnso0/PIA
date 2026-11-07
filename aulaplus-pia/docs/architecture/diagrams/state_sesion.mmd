@@ -1,0 +1,11 @@
+stateDiagram-v2
+  [*] --> programada
+  programada --> en_curso: start
+  programada --> cancelada: cancel
+  programada --> ausencia_tutor: tutor_absent
+  programada --> ausencia_estudiante: student_absent
+  en_curso --> realizada: finish (checklist ambas partes)
+  en_curso --> realizada: cut_counts (≥ 15 min)
+  en_curso --> interrumpida: cut_short (< 15 min)
+  realizada --> cerrada: close (ambos califican o 48 h)
+  cerrada --> [*]
