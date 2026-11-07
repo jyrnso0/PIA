@@ -25,8 +25,16 @@ La suite emitió una advertencia deprecada de Starlette/httpx; no afectó el res
 
 ## 5.3 Evidencia de CI/CD y despliegue
 
-Verificación realizada el **6 de noviembre de 2026** en el repositorio [jyrnso0/PIA](https://github.com/jyrnso0/PIA), rama `main`. El commit de la validación más reciente es [`bb02351`](https://github.com/jyrnso0/PIA/commit/bb02351d51e355ed343da36987685d4fe97e262a).
+Verificación realizada el **6 de noviembre de 2026** en el repositorio [jyrnso0/PIA](https://github.com/jyrnso0/PIA), rama `main`, commit [`329f9dd`](https://github.com/jyrnso0/PIA/commit/329f9ddf150c846fb94e6137376a7085f4a37147). El workflow publicado es [`.github/workflows/ci.yml`](https://github.com/jyrnso0/PIA/blob/main/.github/workflows/ci.yml).
 
-GitHub detectó el workflow en [`.github/workflows/ci.yml`](https://github.com/jyrnso0/PIA/blob/main/.github/workflows/ci.yml) y ejecutó [CI/CD #3](https://github.com/jyrnso0/PIA/actions/runs/42325376168) para `main`, commit `bb02351`. Los jobs `test` (Ruff y pytest contra PostgreSQL) y `docker` (build y pruebas de Compose) finalizaron correctamente. El job `deploy` **falló** en `Validate Render URL configuration`: el log muestra `RENDER_BASE_URL` vacío. Por esa razón no se ejecutaron el deploy hook ni las comprobaciones HTTP de `/health` y `/docs`. El job ahora ejecuta sus comandos desde la raíz del workspace. Aunque se indicó que la variable ya estaba configurada, Actions volvió a recibirla vacía; hay que verificar que `RENDER_BASE_URL` esté definida como variable de repositorio para `jyrnso0/PIA`, no como secreto ni como variable de otro entorno.
+La ejecución manual [CI/CD #9](https://github.com/jyrnso0/PIA/actions/runs/42329635230) finalizó con **Success**. Los tres jobs pasaron:
 
-No se registró ni expuso ningún secreto. En este run no se verificó la URL pública ni se consultaron `/health` y `/docs`, porque `RENDER_BASE_URL` llegó vacía al job. El host `https://aulaplus-api.onrender.com` consultado anteriormente no está confirmado como la URL pública canónica y no se usa como sustituto. No se confirma un despliegue operativo ni un resultado positivo de CD. Se guardó la captura del resultado completo de Actions en [`CI_CD_Run_42325376168_Failed.png`](CI_CD_Run_42325376168_Failed.png); no existen capturas de endpoints para este run porque las verificaciones no se ejecutaron.
+| Job | Resultado verificado |
+|---|---|
+| `test` | Ruff y pytest con PostgreSQL 16 finalizaron correctamente. |
+| `docker` | Se construyó la aplicación y pasaron las pruebas de Docker Compose. |
+| `deploy` | Se aceptó el deploy hook de Render y las verificaciones posteriores de `/health` y `/docs` finalizaron correctamente. |
+
+La URL pública comprobada es <https://pia-ndd7.onrender.com>. En una comprobación directa el 6 de noviembre de 2026, `/health` respondió HTTP 200 con `{"status":"ok"}` y `/docs` respondió HTTP 200. La ejecución de Actions volvió a verificar ambos endpoints después de solicitar el despliegue.
+
+La captura del resumen exitoso, con los tres jobs en verde, está en [`CI_CD_Run_42329635230_Success.png`](CI_CD_Run_42329635230_Success.png). Las ejecuciones anteriores con errores de configuración quedan como historial y están supersedidas por el resultado exitoso #9. No se registró ni expuso ningún secreto.

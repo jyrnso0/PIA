@@ -2,7 +2,7 @@
 
 Backend REST para conectar estudiantes con tutores y gestionar reservas, pagos, sesiones, cancelaciones, ausencias, reembolsos, disputas y métricas semanales.
 
-El código fuente está publicado en el [repositorio GitHub del equipo](https://github.com/jyrnso0/PIA). Al 6 de noviembre de 2026, la rama `main` contiene 124 commits; el más reciente es [`5115eaf`](https://github.com/jyrnso0/PIA/commit/5115eaf37228fd25eb0dd765dbb7756b207775d7), fechado el 7 de noviembre de 2026 UTC. La ejecución de CI/CD y el despliegue público no están verificados: GitHub Actions no muestra workflows ni ejecuciones y la URL de prueba indicada en la sección de publicación responde HTTP 503.
+El código fuente está publicado en el [repositorio GitHub del equipo](https://github.com/jyrnso0/PIA). La última ejecución verificada de CI/CD, [CI/CD #9](https://github.com/jyrnso0/PIA/actions/runs/42329635230), terminó correctamente: pasaron las pruebas, Docker, el deploy hook de Render y las comprobaciones HTTP de `/health` y `/docs`.
 
 ## Requisitos
 
@@ -96,9 +96,9 @@ La API demuestra autorización con el encabezado `X-Role`: solo `soporte` resuel
 
 ## CI/CD y publicación
 
-El workflow está en `.github/workflows/ci.yml`, en la raíz del repositorio, y ejecuta lint, pruebas contra PostgreSQL, build y pruebas con Docker Compose. En pushes a `main` y ejecuciones manuales desde esa rama, solicita el despliegue en Render y verifica que `/health` y `/docs` devuelvan HTTP 2xx. Configura la variable de Actions `RENDER_BASE_URL` con la URL base pública del servicio y el secreto `RENDER_DEPLOY_HOOK` en GitHub; no publiques el valor del secreto. La ejecución falla si falta la configuración, si el hook falla o si alguno de los endpoints no responde correctamente. La existencia del workflow no implica que haya una ejecución exitosa: revisa [GitHub Actions](https://github.com/jyrnso0/PIA/actions) y el resumen de cada ejecución.
+El workflow está en `.github/workflows/ci.yml`, en la raíz del repositorio, y ejecuta lint, pruebas contra PostgreSQL, build y pruebas con Docker Compose. En pushes a `main` y ejecuciones manuales desde esa rama, solicita el despliegue en Render y verifica que `/health` y `/docs` devuelvan HTTP 2xx. Configura la variable de Actions `RENDER_BASE_URL` con la URL base pública del servicio y el secreto `RENDER_DEPLOY_HOOK` en GitHub; no publiques el valor del secreto. La ejecución falla si falta la configuración, si el hook falla o si alguno de los endpoints no responde correctamente. La última ejecución verificada, [CI/CD #9](https://github.com/jyrnso0/PIA/actions/runs/42329635230), pasó en los tres jobs (`test`, `docker` y `deploy`).
 
-La URL `https://aulaplus-api.onrender.com` se probó el 6 de noviembre de 2026: tanto `/health` como `/docs` respondieron HTTP 503. No se puede confirmar que esa URL corresponda a un servicio activo ni afirmar que el despliegue se realizó manual o automáticamente. Configura el Blueprint de Render con `render.yaml`, verifica los dos endpoints en la URL real del servicio y actualiza esta evidencia cuando respondan correctamente.
+La URL pública verificada es <https://pia-ndd7.onrender.com>. El 6 de noviembre de 2026, `/health` y `/docs` respondieron HTTP 200; el health check devolvió `{"status":"ok"}`. La ejecución #9 también completó correctamente las comprobaciones posteriores al despliegue. Las capturas y el detalle de la verificación están en `docs/evidence/`.
 
 ## Documentación
 
@@ -114,5 +114,6 @@ La URL `https://aulaplus-api.onrender.com` se probó el 6 de noviembre de 2026: 
 | Trazabilidad BR→US→código→pruebas | `docs/traceability.md`, `docs/traceability.csv` |
 | Evidencias | `docs/evidence/` |
 | Evidencia de validación y estado de CI/CD | `docs/evidence/Final_Validation.md` |
+| Reporte final del PIA (PDF) | `docs/Reporte_Final_PIA.pdf` |
 | Reporte de arquitectura original (PDF) | `docs/source/Architecture_Report_AulaPlus.pdf` |
 | Documentos originales del equipo | `docs/source/` |
