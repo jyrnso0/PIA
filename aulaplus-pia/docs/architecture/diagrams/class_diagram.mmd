@@ -1,0 +1,35 @@
+classDiagram
+  direction TB
+  class Reserva { +id +tutor_id +student_id +subject +topic +modality +schedule +amount +deadline +state
+    +confirm_payment(now) +release_if_expired(now) +cancel() }
+  class Sesion { +id +reserva_id +schedule +modality +hourly_rate +checklist +presence +ratings +cancellation +state
+    +start() +confirm_presence() +confirm_checklist() +finish() +connection_cut() +cancel() +mark_tutor_absent() +mark_student_absent()
+    +propose_extension() +accept_extension() +propose_modality_change() +accept_modality_change() +rate() +report_comment() +close_if_overdue() }
+  class Pago { +id +amount +breakdown +refunded +refund_evidence +state
+    +confirm() +penalty_for() +refund() +add_extra() +settle() }
+  class Disputa { +id +session_id +evidence +decision +responsible +state
+    +attach_evidence() +escalate() +resolve() +overdue(now) }
+  class Tutor { +id +availability +absences +state +average_rating
+    +set_availability() +register_absence() +reactivate() +add_rating() }
+  class Estudiante { +id +active }
+  class StateMachine { +state +fire(trigger) +can(trigger) }
+  class Specification { <<abstract>> +is_satisfied_by(candidate) }
+  class RefundPolicy { <<abstract>> +amount() }
+  class RefundCalculator
+  class OverlapValidator
+  class Money { +amount +times() }
+  class Schedule { +start +end +overlaps() }
+  Reserva "1" --> "1" Sesion : confirma
+  Reserva "1" --> "1" Pago : genera
+  Sesion "1" --> "0..*" Disputa : puede tener
+  Tutor "1" --> "0..*" Sesion : imparte
+  Estudiante "1" --> "0..*" Reserva : solicita
+  Reserva o-- StateMachine
+  Sesion o-- StateMachine
+  Pago o-- StateMachine
+  Disputa o-- StateMachine
+  Reserva *-- Money
+  Reserva *-- Schedule
+  RefundCalculator o-- RefundPolicy
+  note for Specification "TutorActive, SlotWithinAvailability, NoOverlap, LateCancellation, WithinDisputeWindow, ConnectionCounts"
+  note for RefundPolicy "TutorAbsenceRefund, StudentCancellationRefund"
