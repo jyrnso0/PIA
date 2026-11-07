@@ -1,0 +1,28 @@
+sequenceDiagram
+  actor E as Estudiante
+  participant API as API FastAPI
+  participant BS as BookingService
+  participant U as SqlUnitOfWork
+  participant R as Reserva
+  participant P as Pago
+  participant G as PaymentGateway
+  E->>API: POST /reservas
+  API->>BS: reserve(...)
+  BS->>U: abrir transacción
+  BS->>BS: StudentActive & TutorActive & SlotWithinAvailability & NoOverlap
+  BS->>R: new Reserva(plazo 15 min)
+  BS->>U: commit (reserva + eventos)
+  API-->>E: 201 pendiente + expires_at
+  E->>API: POST /reservas/{id}/pago
+  API->>BS: pay(...)
+  BS->>R: confirm_payment(now)
+  alt plazo vencido
+    R-->>BS: DeadlineExpired
+    BS-->>E: 409 (rollback)
+  else dentro del plazo
+    BS->>G: charge(referencia, importe)
+    BS->>P: confirm() → comisión 20 % / tutor 80 %
+    BS->>BS: crear Sesion programada
+    BS->>U: commit (reserva, pago, sesión, outbox)
+    API-->>E: 200 confirmada + session_id
+  end
