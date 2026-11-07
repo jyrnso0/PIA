@@ -58,6 +58,7 @@ jobs:
     env:
       RENDER_BASE_URL: ${{ vars.RENDER_BASE_URL }}
     steps:
+      - uses: actions/checkout@v4
       - name: Validate Render URL configuration
         shell: bash
         run: |
