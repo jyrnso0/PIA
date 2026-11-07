@@ -1,0 +1,6 @@
+stateDiagram-v2
+  direction LR
+  [*] --> pendiente
+  pendiente --> confirmada: pay (≤ 15 min)
+  pendiente --> liberada: expire (> 15 min)
+  confirmada --> cancelada: cancel
