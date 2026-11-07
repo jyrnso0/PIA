@@ -1,0 +1,2134 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AulaPlus API",
+    "description": "Plataforma de tutorías académicas: reservas, pagos, sesiones y disputas.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notificaciones": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Avisos de plazos por vencer",
+        "operationId": "notifications_notificaciones_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tutores": {
+      "post": {
+        "tags": [
+          "Tutores"
+        ],
+        "summary": "Register Tutor",
+        "operationId": "register_tutor_tutores_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TutorIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/estudiantes": {
+      "post": {
+        "tags": [
+          "Tutores"
+        ],
+        "summary": "Register Student",
+        "operationId": "register_student_estudiantes_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tutores/{tutor_id}/disponibilidad": {
+      "put": {
+        "tags": [
+          "Tutores"
+        ],
+        "summary": "Availability",
+        "operationId": "availability_tutores__tutor_id__disponibilidad_put",
+        "parameters": [
+          {
+            "name": "tutor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Tutor Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvailabilityIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tutores/{tutor_id}/perfil": {
+      "get": {
+        "tags": [
+          "Tutores"
+        ],
+        "summary": "Profile",
+        "operationId": "profile_tutores__tutor_id__perfil_get",
+        "parameters": [
+          {
+            "name": "tutor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Tutor Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tutores/{tutor_id}/estado": {
+      "get": {
+        "tags": [
+          "Tutores"
+        ],
+        "summary": "Tutor Status",
+        "operationId": "tutor_status_tutores__tutor_id__estado_get",
+        "parameters": [
+          {
+            "name": "tutor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Tutor Id"
+            }
+          },
+          {
+            "name": "x-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "soporte | administrador | estudiante | tutor",
+              "title": "X-Role"
+            },
+            "description": "soporte | administrador | estudiante | tutor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tutores/{tutor_id}/reactivar": {
+      "post": {
+        "tags": [
+          "Tutores"
+        ],
+        "summary": "Reactivate",
+        "operationId": "reactivate_tutores__tutor_id__reactivar_post",
+        "parameters": [
+          {
+            "name": "tutor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Tutor Id"
+            }
+          },
+          {
+            "name": "x-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "soporte | administrador | estudiante | tutor",
+              "title": "X-Role"
+            },
+            "description": "soporte | administrador | estudiante | tutor"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReactivateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservas": {
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Reserve",
+        "operationId": "reserve_reservas_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservas/{reserva_id}": {
+      "get": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Get Reserva",
+        "operationId": "get_reserva_reservas__reserva_id__get",
+        "parameters": [
+          {
+            "name": "reserva_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Reserva Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservas/{reserva_id}/pago": {
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Pay",
+        "operationId": "pay_reservas__reserva_id__pago_post",
+        "parameters": [
+          {
+            "name": "reserva_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Reserva Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PagoIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservas/liberar-vencidas": {
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Release",
+        "operationId": "release_reservas_liberar_vencidas_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}": {
+      "get": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Get Session",
+        "operationId": "get_session_sesiones__sid__get",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/presencia": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Confirmar presencia (BR-0008)",
+        "operationId": "presence_sesiones__sid__presencia_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/iniciar": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Start",
+        "operationId": "start_sesiones__sid__iniciar_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/checklist": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Checklist",
+        "operationId": "checklist_sesiones__sid__checklist_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/finalizar": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Finish",
+        "operationId": "finish_sesiones__sid__finalizar_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/corte-conexion": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Falla de conexión (BR-0010)",
+        "operationId": "connection_cut_sesiones__sid__corte_conexion_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectionCutIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/cancelar": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Cancel",
+        "operationId": "cancel_sesiones__sid__cancelar_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/ausencia-tutor": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Tutor Absence",
+        "operationId": "tutor_absence_sesiones__sid__ausencia_tutor_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          },
+          {
+            "name": "x-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "soporte | administrador | estudiante | tutor",
+              "title": "X-Role"
+            },
+            "description": "soporte | administrador | estudiante | tutor"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TutorAbsenceIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/ausencia-estudiante": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Student Absence",
+        "operationId": "student_absence_sesiones__sid__ausencia_estudiante_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/extension": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Solicitar extensión (BR-0012)",
+        "operationId": "propose_extension_sesiones__sid__extension_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtensionIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/extension/aceptar": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Accept Extension",
+        "operationId": "accept_extension_sesiones__sid__extension_aceptar_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/modalidad": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Solicitar cambio de modalidad (BR-0013)",
+        "operationId": "propose_modality_sesiones__sid__modalidad_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModalityIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/modalidad/aceptar": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Accept Modality",
+        "operationId": "accept_modality_sesiones__sid__modalidad_aceptar_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/calificaciones": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Rate",
+        "operationId": "rate_sesiones__sid__calificaciones_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RatingIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/{sid}/comentarios/reportar": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Reportar comentario (BR-0016)",
+        "operationId": "report_comment_sesiones__sid__comentarios_reportar_post",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportCommentIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sesiones/cerrar-vencidas": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Close Overdue",
+        "operationId": "close_overdue_sesiones_cerrar_vencidas_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disputas": {
+      "post": {
+        "tags": [
+          "Disputas"
+        ],
+        "summary": "Report",
+        "operationId": "report_disputas_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisputeIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disputas/vencidas": {
+      "get": {
+        "tags": [
+          "Disputas"
+        ],
+        "summary": "Disputas fuera del SLA de 48 h (BR-0011)",
+        "operationId": "overdue_disputes_disputas_vencidas_get",
+        "parameters": [
+          {
+            "name": "x-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "soporte | administrador | estudiante | tutor",
+              "title": "X-Role"
+            },
+            "description": "soporte | administrador | estudiante | tutor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disputas/{did}": {
+      "get": {
+        "tags": [
+          "Disputas"
+        ],
+        "summary": "Get Dispute",
+        "operationId": "get_dispute_disputas__did__get",
+        "parameters": [
+          {
+            "name": "did",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Did"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disputas/{did}/evidencia": {
+      "post": {
+        "tags": [
+          "Disputas"
+        ],
+        "summary": "Evidence",
+        "operationId": "evidence_disputas__did__evidencia_post",
+        "parameters": [
+          {
+            "name": "did",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Did"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvidenceIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disputas/{did}/escalar": {
+      "post": {
+        "tags": [
+          "Disputas"
+        ],
+        "summary": "Escalate",
+        "operationId": "escalate_disputas__did__escalar_post",
+        "parameters": [
+          {
+            "name": "did",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Did"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disputas/{did}/resolver": {
+      "post": {
+        "tags": [
+          "Disputas"
+        ],
+        "summary": "Resolver disputa (solo Soporte; exige evidencia)",
+        "operationId": "resolve_disputas__did__resolver_post",
+        "parameters": [
+          {
+            "name": "did",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Did"
+            }
+          },
+          {
+            "name": "x-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "soporte | administrador | estudiante | tutor",
+              "title": "X-Role"
+            },
+            "description": "soporte | administrador | estudiante | tutor"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard/semanal": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Weekly",
+        "operationId": "weekly_dashboard_semanal_get",
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          },
+          {
+            "name": "x-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "soporte | administrador | estudiante | tutor",
+              "title": "X-Role"
+            },
+            "description": "soporte | administrador | estudiante | tutor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AcceptIn": {
+        "properties": {
+          "by": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "by"
+        ],
+        "title": "AcceptIn"
+      },
+      "AvailabilityIn": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Subject",
+            "examples": [
+              "Cálculo"
+            ]
+          },
+          "modalities": {
+            "items": {
+              "$ref": "#/components/schemas/Modality"
+            },
+            "type": "array",
+            "title": "Modalities",
+            "default": [
+              "virtual"
+            ]
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/SlotIn"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Slots"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subject",
+          "slots"
+        ],
+        "title": "AvailabilityIn"
+      },
+      "CancelIn": {
+        "properties": {
+          "requester": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "reported_situation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reported Situation"
+          },
+          "responsible": {
+            "type": "string",
+            "title": "Responsible",
+            "default": "soporte-1"
+          }
+        },
+        "type": "object",
+        "required": [
+          "requester"
+        ],
+        "title": "CancelIn"
+      },
+      "ConnectionCutIn": {
+        "properties": {
+          "minutes": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Minutes",
+            "description": "Minutos transcurridos antes del corte"
+          }
+        },
+        "type": "object",
+        "required": [
+          "minutes"
+        ],
+        "title": "ConnectionCutIn"
+      },
+      "DisputeIn": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "title": "Session Id"
+          },
+          "party": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session_id",
+          "party"
+        ],
+        "title": "DisputeIn"
+      },
+      "EvidenceIn": {
+        "properties": {
+          "reference": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Reference"
+          },
+          "author": {
+            "type": "string",
+            "title": "Author",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "reference"
+        ],
+        "title": "EvidenceIn"
+      },
+      "ExtensionIn": {
+        "properties": {
+          "by": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "minutes": {
+            "type": "integer",
+            "maximum": 240.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Minutes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "by",
+          "minutes"
+        ],
+        "title": "ExtensionIn"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Modality": {
+        "type": "string",
+        "enum": [
+          "presencial",
+          "virtual"
+        ],
+        "title": "Modality"
+      },
+      "ModalityIn": {
+        "properties": {
+          "by": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "modality": {
+            "$ref": "#/components/schemas/Modality"
+          }
+        },
+        "type": "object",
+        "required": [
+          "by",
+          "modality"
+        ],
+        "title": "ModalityIn"
+      },
+      "PagoIn": {
+        "properties": {
+          "reference": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Reference",
+            "examples": [
+              "TXN-0001"
+            ]
+          },
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Amount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reference",
+          "amount"
+        ],
+        "title": "PagoIn"
+      },
+      "PartyIn": {
+        "properties": {
+          "party": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "party"
+        ],
+        "title": "PartyIn"
+      },
+      "RatingIn": {
+        "properties": {
+          "by": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "stars": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Stars"
+          },
+          "comment": {
+            "type": "string",
+            "title": "Comment",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "by",
+          "stars"
+        ],
+        "title": "RatingIn"
+      },
+      "ReactivateIn": {
+        "properties": {
+          "responsible": {
+            "type": "string",
+            "title": "Responsible"
+          }
+        },
+        "type": "object",
+        "required": [
+          "responsible"
+        ],
+        "title": "ReactivateIn"
+      },
+      "ReportCommentIn": {
+        "properties": {
+          "author": {
+            "$ref": "#/components/schemas/Role",
+            "default": "estudiante"
+          }
+        },
+        "type": "object",
+        "title": "ReportCommentIn"
+      },
+      "ReservaIn": {
+        "properties": {
+          "student_id": {
+            "type": "string",
+            "title": "Student Id"
+          },
+          "tutor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tutor Id",
+            "description": "Si se omite, la plataforma asigna un tutor disponible"
+          },
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "topic": {
+            "type": "string",
+            "title": "Topic",
+            "default": ""
+          },
+          "modality": {
+            "$ref": "#/components/schemas/Modality",
+            "default": "virtual"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Amount",
+            "examples": [
+              "300.00"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "student_id",
+          "subject",
+          "start",
+          "end",
+          "amount"
+        ],
+        "title": "ReservaIn"
+      },
+      "ResolveIn": {
+        "properties": {
+          "responsible": {
+            "type": "string",
+            "title": "Responsible"
+          },
+          "decision": {
+            "type": "string",
+            "title": "Decision"
+          },
+          "refund_percent": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Refund Percent",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "responsible",
+          "decision"
+        ],
+        "title": "ResolveIn"
+      },
+      "Role": {
+        "type": "string",
+        "enum": [
+          "estudiante",
+          "tutor",
+          "soporte",
+          "administrador",
+          "sistema"
+        ],
+        "title": "Role"
+      },
+      "SlotIn": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "SlotIn"
+      },
+      "StudentIn": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Id",
+            "examples": [
+              "est-1"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "StudentIn"
+      },
+      "TutorAbsenceIn": {
+        "properties": {
+          "responsible": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Responsible"
+          }
+        },
+        "type": "object",
+        "required": [
+          "responsible"
+        ],
+        "title": "TutorAbsenceIn"
+      },
+      "TutorIn": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Id",
+            "examples": [
+              "tutor-1"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "TutorIn"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Tutores",
+      "description": "Alta, disponibilidad por materia (BR-0015), perfil público (BR-0016), suspensión (BR-0018)"
+    },
+    {
+      "name": "Reservas",
+      "description": "Reserva, pago en 15 min y liberación (BR-0001, BR-0005, BR-0006)"
+    },
+    {
+      "name": "Sesiones",
+      "description": "Ciclo de vida, cancelación, ausencias, extensión, modalidad, calificación"
+    },
+    {
+      "name": "Disputas",
+      "description": "Reporte, evidencia, escalamiento y resolución (BR-0007, 0011, 0017, 0020)"
+    },
+    {
+      "name": "Dashboard",
+      "description": "Indicadores semanales para Administración (BR-0019)"
+    },
+    {
+      "name": "Sistema",
+      "description": "Salud del servicio y notificaciones"
+    }
+  ]
+}
