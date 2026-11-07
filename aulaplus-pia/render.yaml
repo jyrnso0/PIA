@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: aulaplus-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerTarget: app
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase: { name: aulaplus-db, property: connectionString }
+databases:
+  - name: aulaplus-db
+    plan: free
