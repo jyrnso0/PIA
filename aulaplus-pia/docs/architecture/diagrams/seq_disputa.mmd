@@ -1,0 +1,24 @@
+sequenceDiagram
+  actor E as Estudiante
+  actor S as Soporte
+  participant API
+  participant DS as DisputeService
+  participant D as Disputa
+  participant P as Pago
+  E->>API: POST /disputas
+  API->>DS: report(session_id)
+  DS->>DS: WithinDisputeWindow (≤ 24 h)
+  DS-->>E: 201 abierta (due_at = +48 h)
+  E->>API: POST /disputas/{id}/evidencia
+  API->>D: attach_evidence()
+  E->>API: POST /disputas/{id}/escalar
+  API->>D: escalate()
+  S->>API: POST /disputas/{id}/resolver (X-Role: soporte)
+  API->>DS: resolve(responsable, decisión, % reembolso)
+  DS->>D: resolve() exige evidencia
+  alt sin evidencia
+    D-->>S: 422 EVIDENCE_REQUIRED
+  else con evidencia
+    DS->>P: refund(motivo, evidencia, responsable)
+    DS-->>S: 200 resuelta
+  end
