@@ -22,3 +22,11 @@ docker compose --profile tests run --rm tests
 ```
 
 La suite emitió una advertencia deprecada de Starlette/httpx; no afectó el resultado. Esta evidencia corresponde a validaciones locales del paquete, no a una ejecución de GitHub Actions ni a un despliegue público.
+
+## 5.3 Evidencia de CI/CD y despliegue
+
+Verificación realizada el **6 de noviembre de 2026** en el repositorio [jyrnso0/PIA](https://github.com/jyrnso0/PIA), rama `main`, con 124 commits. El commit más reciente observado es [`5115eaf`](https://github.com/jyrnso0/PIA/commit/5115eaf37228fd25eb0dd765dbb7756b207775d7).
+
+La consulta de GitHub Actions devolvió **0 workflows y 0 ejecuciones** para el repositorio. La página web de [Actions](https://github.com/jyrnso0/PIA/actions) mostró 404; ese resultado web, por sí solo, no permite distinguir entre una ruta no disponible y una limitación de acceso. La revisión del árbol de `main` confirmó que el archivo existente está en [`aulaplus-pia/.github/workflows/ci.yml`](https://github.com/jyrnso0/PIA/blob/main/aulaplus-pia/.github/workflows/ci.yml), no en `.github/workflows/ci.yml` en la raíz. Por tanto, no hay una ejecución verificable ni resultados de CI/CD que puedan declararse exitosos o fallidos. El archivo define pruebas, lint, Docker y un paso de despliegue condicionado a `push` en `main`; no se verificó que el despliegue se haya ejecutado.
+
+Se verificó la URL [`https://aulaplus-api.onrender.com`](https://aulaplus-api.onrender.com). El **6 de noviembre de 2026**, `/health` y `/docs` respondieron **HTTP 503** y la página de Render indicó que la aplicación estaba cargando/despertando. En ese momento, ninguno de los dos endpoints estaba disponible; no se confirma un servicio operativo ni si el despliegue fue manual o automático. No se cuenta con una ejecución de Actions ni con respuestas saludables de los endpoints como evidencia de éxito.

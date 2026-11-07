@@ -1,0 +1,187 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./aulaplus-pia
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: aulaplus
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: aulaplus
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U aulaplus" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg2://aulaplus:ci_password@localhost:5432/aulaplus
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: aulaplus-pia/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check src tests scripts
+      - run: pytest --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=80
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: aulaplus-pia/coverage.xml
+
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose build app
+      - run: docker compose --profile tests run --rm tests
+      - run: docker compose down -v
+
+  deploy:
+    needs: [test, docker]
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    env:
+      RENDER_BASE_URL: ${{ vars.RENDER_BASE_URL }}
+    steps:
+      - name: Validate Render URL configuration
+        shell: bash
+        run: |
+          if ! python3 - "$RENDER_BASE_URL" <<'PY'
+          import sys
+          import re
+          from urllib.parse import urlsplit
+
+          value = sys.argv[1]
+          try:
+              parsed = urlsplit(value)
+              hostname_valid = parsed.hostname is not None and re.fullmatch(
+                  r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
+                  r"(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*",
+                  parsed.hostname,
+              )
+              port = parsed.port
+              valid = (
+                  parsed.scheme == "https"
+                  and hostname_valid
+                  and parsed.username is None
+                  and parsed.password is None
+                  and parsed.path in ("", "/")
+                  and not parsed.query
+                  and not parsed.fragment
+                  and not any(ord(char) <= 32 for char in value)
+                  and (port is None or 1 <= port <= 65535)
+              )
+          except ValueError:
+              valid = False
+
+          if not valid:
+              print(
+                  "::error::Set the repository Actions variable RENDER_BASE_URL "
+                  "to the public HTTPS base URL of the Render service."
+              )
+              raise SystemExit(1)
+          PY
+          then
+            echo "### Post-deployment HTTP checks" >> "$GITHUB_STEP_SUMMARY"
+            echo "Checks were not run: set a valid HTTPS repository Actions variable named \`RENDER_BASE_URL\`." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+      - name: Trigger Render deployment
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        shell: bash
+        run: |
+          if [[ -z "$RENDER_DEPLOY_HOOK" ]]; then
+            echo "::error::Configure the RENDER_DEPLOY_HOOK repository secret."
+            exit 1
+          fi
+
+          set +e
+          http_code=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            --max-time 30 --request POST "$RENDER_DEPLOY_HOOK" 2>/dev/null)
+          curl_status=$?
+          set -e
+
+          if [[ "$curl_status" -ne 0 || ! "$http_code" =~ ^2[0-9][0-9]$ ]]; then
+            echo "Render deploy hook failed (HTTP ${http_code:-000})."
+            echo "### Render deployment trigger" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Result: failed (HTTP ${http_code:-000})." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "Render deployment trigger accepted (HTTP $http_code)."
+          echo "### Render deployment trigger" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Result: accepted (HTTP $http_code); service health is checked below." >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify deployed endpoints
+        shell: bash
+        run: |
+          set -uo pipefail
+
+          base_url="${RENDER_BASE_URL%/}"
+          max_attempts=12
+          retry_delay=10
+
+          check_endpoint() {
+            local path="$1"
+            local url="${base_url}${path}"
+            local attempt curl_status
+            local http_code="000"
+
+            attempt=0
+            while [[ "$attempt" -lt "$max_attempts" ]]; do
+              attempt=$((attempt + 1))
+              set +e
+              http_code=$(curl --location --silent --show-error --output /dev/null \
+                --write-out '%{http_code}' --connect-timeout 10 --max-time 20 "$url")
+              curl_status=$?
+              set -e
+
+              if [[ "$curl_status" -eq 0 && "$http_code" =~ ^2[0-9][0-9]$ ]]; then
+                break
+              fi
+
+              if [[ "$attempt" -lt "$max_attempts" ]]; then
+                sleep "$retry_delay"
+              fi
+            done
+
+            printf '| `%s` | %s | %s | %s/%s |\n' \
+              "$path" "$url" "$http_code" "$attempt" "$max_attempts" \
+              >> "$GITHUB_STEP_SUMMARY"
+
+            if [[ "$curl_status" -ne 0 || ! "$http_code" =~ ^2[0-9][0-9]$ ]]; then
+              echo "::error::Endpoint $path failed with HTTP ${http_code} after ${attempt} attempt(s)."
+              return 1
+            fi
+            return 0
+          }
+
+          echo "### Post-deployment HTTP checks" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Endpoint | URL | HTTP status | Attempts |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|---:|---:|" >> "$GITHUB_STEP_SUMMARY"
+
+          failed=0
+          check_endpoint "/health" || failed=1
+          check_endpoint "/docs" || failed=1
+
+          if [[ "$failed" -ne 0 ]]; then
+            echo "One or more deployed endpoints did not return HTTP 2xx."
+            exit 1
+          fi
+
+          echo "Both deployed endpoints returned HTTP 2xx."

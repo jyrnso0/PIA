@@ -2,7 +2,7 @@
 
 Backend REST para conectar estudiantes con tutores y gestionar reservas, pagos, sesiones, cancelaciones, ausencias, reembolsos, disputas y métricas semanales.
 
-El material fuente registra el repositorio del equipo como <https://github.com/jyrnso0/Aulaplus>; desde este ZIP no se pueden verificar el acceso, el historial de commits ni el estado de CI. **No se incluye una URL de despliegue verificada**: publica y prueba la revisión final antes de agregarla aquí.
+El código fuente está publicado en el [repositorio GitHub del equipo](https://github.com/jyrnso0/PIA). Al 6 de noviembre de 2026, la rama `main` contiene 124 commits; el más reciente es [`5115eaf`](https://github.com/jyrnso0/PIA/commit/5115eaf37228fd25eb0dd765dbb7756b207775d7), fechado el 7 de noviembre de 2026 UTC. La ejecución de CI/CD y el despliegue público no están verificados: GitHub Actions no muestra workflows ni ejecuciones y la URL de prueba indicada en la sección de publicación responde HTTP 503.
 
 ## Requisitos
 
@@ -96,9 +96,9 @@ La API demuestra autorización con el encabezado `X-Role`: solo `soporte` resuel
 
 ## CI/CD y publicación
 
-`.github/workflows/ci.yml` contiene lint y pruebas contra PostgreSQL, build y pruebas con Docker Compose, y un paso de despliegue en Render para pushes a `main`. Para que CI/CD quede activo al publicar, configura el secreto `RENDER_DEPLOY_HOOK` en el repositorio GitHub; sin él, el paso de despliegue falla explícitamente. Este ZIP no demuestra que el workflow haya corrido en GitHub ni incluye historial `.git`.
+El workflow está en `.github/workflows/ci.yml`, en la raíz del repositorio, y ejecuta lint, pruebas contra PostgreSQL, build y pruebas con Docker Compose. En pushes a `main` y ejecuciones manuales desde esa rama, solicita el despliegue en Render y verifica que `/health` y `/docs` devuelvan HTTP 2xx. Configura la variable de Actions `RENDER_BASE_URL` con la URL base pública del servicio y el secreto `RENDER_DEPLOY_HOOK` en GitHub; no publiques el valor del secreto. La ejecución falla si falta la configuración, si el hook falla o si alguno de los endpoints no responde correctamente. La existencia del workflow no implica que haya una ejecución exitosa: revisa [GitHub Actions](https://github.com/jyrnso0/PIA/actions) y el resumen de cada ejecución.
 
-Para el despliegue, crea un Blueprint de Render con `render.yaml`, configura el secreto `RENDER_DEPLOY_HOOK`, y verifica `/health` y `/docs` en la URL publicada. Registra aquí y en el reporte solo la URL real que hayas probado.
+La URL `https://aulaplus-api.onrender.com` se probó el 6 de noviembre de 2026: tanto `/health` como `/docs` respondieron HTTP 503. No se puede confirmar que esa URL corresponda a un servicio activo ni afirmar que el despliegue se realizó manual o automáticamente. Configura el Blueprint de Render con `render.yaml`, verifica los dos endpoints en la URL real del servicio y actualiza esta evidencia cuando respondan correctamente.
 
 ## Documentación
 
@@ -113,5 +113,6 @@ Para el despliegue, crea un Blueprint de Render con `render.yaml`, configura el 
 | OpenAPI | `docs/api/openapi.json` (regenerable con `scripts/export_openapi.py`; UI en `/docs`) |
 | Trazabilidad BR→US→código→pruebas | `docs/traceability.md`, `docs/traceability.csv` |
 | Evidencias | `docs/evidence/` |
-| Reporte final (PDF) | `docs/report/Reporte_Final_PIA.pdf` |
+| Evidencia de validación y estado de CI/CD | `docs/evidence/Final_Validation.md` |
+| Reporte de arquitectura original (PDF) | `docs/source/Architecture_Report_AulaPlus.pdf` |
 | Documentos originales del equipo | `docs/source/` |
