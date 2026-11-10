@@ -20,11 +20,12 @@ class _Active(UnitOfWork):
 
     def __init__(self, factory: sessionmaker, clock=dateime.utcnow):
         self._session: Session = factory()
+        self._clock = clock
         self._seen: list = []
         s, seen = self._session, self._seen
         self.reservas, self.sesiones = SqlReservaRepository(s, seen), SqlSesionRepository(s, seen)
-        self.tutores, self.pagos = SqlTutorRepository(s, seen), SqlPagoRepository(s, seen)
-        self.disputas, self.estudiantes = SqlDisputaRepository(s, seen), SqlEstudianteRepository(s, seen)
+self.tutores, self.pagos = SqlTutorRepository(s, seen), SqlPagoRepository(s, seen, clock)
+self.disputas, self.estudiantes = SqlDisputaRepository(s, seen), SqlEstudianteRepository(s, seen)
 
     def __enter__(self):
         return self
@@ -54,8 +55,8 @@ class SqlUnitOfWork(UnitOfWork):
         self._local = threading.local()
 
     def __enter__(self) -> UnitOfWork:
-        active = _Active(self._factory)
-        if not hasattr(self._local, "stack"):
+active = _Active(selft._factory, self._clock)
+if not hasattr(self._local, "stack"):
             self._local.stack = []
         self._local.stack.append(active)
         return active
