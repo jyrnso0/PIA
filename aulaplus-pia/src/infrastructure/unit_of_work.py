@@ -1,5 +1,6 @@
 import threading
 from datetime import datetime
+
 from sqlalchemy.orm import Session, sessionmaker
 
 from ..application.ports import UnitOfWork
@@ -12,6 +13,7 @@ from .repositories import (
     SqlSesionRepository,
     SqlTutorRepository,
 )
+
 
 class _Active(UnitOfWork):
     """Una transacción en curso (una sesión SQL). Es por-uso, por lo tanto segura entre hilos."""
