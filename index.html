@@ -338,7 +338,7 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
       <a href="#materias" data-pantalla="materias">Materias</a>
       <a href="#maestros" data-pantalla="maestros">Maestros disponibles</a>
       <a href="#garantias" data-pantalla="garantias">Garantías</a>
-      <a href="#reservar" data-pantalla="reservar">Reservar</a>
+      <a href="#reservar" data-pantalla="reservar" class="student-only">Reservar</a>
       <a href="#para-tutores" data-pantalla="para-tutores" class="admin-only">Administración</a>
       <a href="#alumnos" data-pantalla="alumnos" class="admin-only">Alumnos y registros</a>
       <a href="#disputas" data-pantalla="disputas">Disputas</a>
@@ -563,7 +563,7 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
 <section id="para-tutores">
   <div class="wrap">
     <h2>Administración: maestros, alumnos y disputas</h2>
-    <p class="lead">Esta es la parte del administrador, y <b>solo se ve con sesión de administrador</b>: agregar maestros y publicar su disponibilidad, ver a los <a href="#alumnos">alumnos con todos sus registros</a> y revisar y resolver las <a href="#disputas">disputas</a>. Con sesión de estudiante esta pantalla, la de alumnos y la de registros no aparecen en el menú ni se pueden abrir.</p>
+    <p class="lead">Esta es la parte del administrador, y <b>solo se ve con sesión de administrador</b>: agregar maestros y publicar su disponibilidad, ver qué maestros están activos y qué clases tienen con cada alumno, ver a los <a href="#alumnos">alumnos con todos sus registros</a> y revisar y resolver las <a href="#disputas">disputas</a>. Con sesión de estudiante esta pantalla, la de alumnos y la de registros no aparecen en el menú ni se pueden abrir.</p>
     <div class="grid2">
       <div class="card">
         <h3>Lo que ganas con AulaPlus</h3>
@@ -610,6 +610,12 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
         </div>
       </div>
     </div>
+    <div class="card" style="margin-top:18px">
+      <h3>Maestros: cuáles están activos y qué clases tienen</h3>
+      <p class="desc">Solo el administrador ve esta lista. Por cada maestro se muestra si está <b>activo</b> o <b>suspendido</b> según el backend, y las clases que tiene registradas en la página, con el alumno de cada una. Las clases aparecen aquí en cuanto un estudiante reserva con ese maestro.</p>
+      <div id="adminTutorsList"></div>
+      <div class="empty" id="adminTutorsEmpty" hidden>No hay maestros registrados todavía.</div>
+    </div>
   </div>
 </section>
 
@@ -628,11 +634,12 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
 <section id="disputas">
   <div class="wrap">
     <h2>Disputas</h2>
-    <p class="lead">Las disputas son los reportes de problema de una sesión. El alumno abre su disputa con el formulario de esta pantalla y sigue su estado aquí. Solo el <b>administrador</b> ve el botón para marcarlas como resueltas, junto con el resto de su panel (Administración, Alumnos y Registros), que el estudiante no puede ver. Recuerda la regla: el reporte se abre dentro de las <b>24 horas</b> posteriores a la sesión y se resuelve en máximo <b>48 horas</b>, con base en la evidencia registrada.</p>
+    <p class="lead">Las disputas son los reportes de problema de una sesión. El alumno abre su disputa con el formulario de esta pantalla. Las disputas registradas solo las ve el <b>administrador</b>, que es quien las marca como resueltas, junto con el resto de su panel (Administración, Alumnos y Registros), que el estudiante no puede ver. Recuerda la regla: el reporte se abre dentro de las <b>24 horas</b> posteriores a la sesión y se resuelve en máximo <b>48 horas</b>, con base en la evidencia registrada.</p>
     <div class="grid2">
-      <div class="card">
+      <div class="locked" id="disputeAdminNote" hidden><b>Solo para revisar.</b> Como administrador ves las disputas de los alumnos en la lista de esta pantalla y las marcas como resueltas; no abres disputas, eso lo hace el alumno.</div>
+      <div class="card" id="disputeOpenCard">
         <h3>Abrir una disputa</h3>
-        <p class="desc">Si tu sesión no fue lo acordado, repórtala aquí con el número de tu reserva. La disputa queda registrada al momento y aparece en la lista de esta misma pantalla para que administración la revise.</p>
+        <p class="desc">Si tu sesión no fue lo acordado, repórtala aquí con el número de tu reserva. La disputa queda registrada al momento para que administración la revise.</p>
         <form id="disputeForm">
           <label for="dReserva">Número de reserva</label>
           <input id="dReserva" placeholder="El número que recibiste al reservar" required />
@@ -660,9 +667,11 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
         </ul>
       </div>
     </div>
-    <h3 style="margin-top:20px">Disputas registradas</h3>
-    <div id="disputesList"></div>
-    <div class="empty" id="disputesEmpty">No hay disputas registradas por ahora. Cuando un alumno abra una desde el formulario de esta pantalla, aparecerá aquí al momento con su estado.</div>
+    <div id="disputeListWrap">
+      <h3 style="margin-top:20px">Disputas registradas</h3>
+      <div id="disputesList"></div>
+      <div class="empty" id="disputesEmpty">No hay disputas registradas por ahora. Cuando un alumno abra una desde el formulario de esta pantalla, aparecerá aquí al momento con su estado.</div>
+    </div>
   </div>
 </section>
 
@@ -734,7 +743,7 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
 <footer>
   <div class="wrap">
     <p><b>AulaPlus</b> · Tutorías particulares presenciales y en línea. Reserva, paga y aprende con respaldo: reembolsos claros, sesiones con evidencia y soporte que responde en máximo 48 horas.</p>
-    <p><a href="#reservar">Reservar una tutoría</a> · <a href="#maestros">Maestros disponibles</a> · <a href="#para-tutores" class="admin-only">Administración</a> · <a href="#garantias">Garantías</a> · <a href="#preguntas">Preguntas frecuentes</a></p>
+    <p><a href="#reservar" class="student-only">Reservar una tutoría</a> · <a href="#maestros">Maestros disponibles</a> · <a href="#para-tutores" class="admin-only">Administración</a> · <a href="#garantias">Garantías</a> · <a href="#preguntas">Preguntas frecuentes</a></p>
   </div>
 </footer>
 </div>
@@ -827,7 +836,7 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
       txt.innerHTML = currentUser
         ? "Sesión iniciada: <b>" + esc(currentUser.name) + "</b> <span class='user-pill'>Usuario: " + esc(currentUser.username) + "</span> <span class='role-pill'>" + esc(ROLE_LABEL[currentRole]) + "</span> " + (isStudent
             ? "Puedes buscar materia, ver maestros, reservar y pagar. Administración, Alumnos y Registros son solo del administrador y no se muestran en tu sesión."
-            : "Puedes agregar maestros, ver a los alumnos con sus registros y revisar y resolver las disputas.")
+            : "Puedes agregar maestros, ver qué maestros están activos y qué clases tienen con cada alumno, ver a los alumnos con sus registros y revisar y resolver las disputas.")
         : "Todavía no inicias sesión: escribe tu usuario y contraseña, o regístrate si aún no tienes cuenta.";
     }
     if (out) out.hidden = !currentUser;
@@ -837,10 +846,17 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
        administrador. Al estudiante no se le muestran en el menú ni en enlaces,
        y sus pantallas quedan bloqueadas si intenta abrirlas. */
     document.querySelectorAll(".admin-only").forEach(function(el){ el.hidden = !isAdmin; });
+    document.querySelectorAll(".student-only").forEach(function(el){ el.hidden = isAdmin; });
     var locked = $("adminLocked"), wrap = $("adminFormWrap");
     if (locked) locked.hidden = isAdmin;
     if (wrap) wrap.hidden = !isAdmin;
     if (typeof renderDisputes === "function") renderDisputes();
+    if (typeof renderAdminTutors === "function") renderAdminTutors();
+    var dCard = $("disputeOpenCard"), dNote = $("disputeAdminNote");
+    if (dCard) dCard.hidden = isAdmin;
+    if (dNote) dNote.hidden = !isAdmin;
+    var dList = $("disputeListWrap");
+    if (dList) dList.hidden = !isAdmin;
     var notice = $("bookRoleNotice");
     if (notice) {
       notice.innerHTML = currentUser
@@ -874,6 +890,11 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
        Alumnos y registros; si lo intenta, se queda en Maestros. */
     if (ADMIN_PANTALLAS.indexOf(id) !== -1 && currentRole !== "administrador") {
       if (currentUser) id = "maestros"; else return;
+    }
+    /* Bloqueo por rol: el administrador no abre Reservar, porque reservar es
+       solo del estudiante; si lo intenta, se queda en Administración. */
+    if (id === "reservar" && currentRole === "administrador") {
+      if (currentUser) id = "para-tutores"; else return;
     }
     pantallaActual = id;
     PANTALLA_IDS.forEach(function(pid){
@@ -1095,18 +1116,25 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
   setInterval(function(){ refreshDateMins(); }, 60000);
 
   /* ---------- alumnos, sus registros y disputas (administración) ---------- */
-  var studentRecords = []; /* reservas hechas en la página, ligadas a su alumno */
-  var disputes = [];       /* disputas abiertas en la página, visibles en administración */
+  /* Los registros y las disputas se guardan en el navegador (localStorage) para
+     que el administrador los siga viendo aunque se recargue la página o se
+     cierre sesión; si se borran los datos del navegador, se pierden. */
+  function loadSaved(key){ try { var v = JSON.parse(localStorage.getItem(key) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+  function saveList(key, list){ try { localStorage.setItem(key, JSON.stringify(list)); } catch (e) { /* sin almacenamiento: solo viven en esta sesión */ } }
+  var studentRecords = loadSaved("aulaPlusRecords"); /* reservas hechas en la página, ligadas a su alumno */
+  var disputes = loadSaved("aulaPlusDisputes");       /* disputas abiertas en la página, visibles en administración */
   function tutorNameById(id){
     var t = tutors.filter(function(x){ return x.id === id; })[0];
     return t ? t.name : (id || "—");
   }
   function registerBookingRecord(rec){
     studentRecords.push(rec);
+    saveList("aulaPlusRecords", studentRecords);
     renderStudents();
   }
   function updateBookingStatus(reservaId, status){
     studentRecords.forEach(function(r){ if (r.reservaId === reservaId) r.status = status; });
+    saveList("aulaPlusRecords", studentRecords);
     renderStudents();
   }
   function studentEntries(){
@@ -1148,6 +1176,7 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
         + "<div><h3>" + esc(e.name) + "</h3><div class='subj' style='color:var(--texto-suave);font-size:13px'>" + esc(e.source) + (e.username ? " · Usuario " + esc(e.username) : "") + " · " + recs.length + (recs.length === 1 ? " registro" : " registros") + "</div></div></div>"
         + recsHtml + dispHtml + "</div>";
     }).join("");
+    if (typeof renderAdminTutors === "function") renderAdminTutors();
   }
   function renderDisputes(){
     var box = $("disputesList"); if (!box) return;
@@ -1162,6 +1191,31 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
                 : "<p class='desc' style='color:var(--texto-suave);font-size:14px'>En revisión: solo el administrador puede marcarla como resuelta, dentro del plazo de 48 horas.</p>")
             : "<p class='desc' style='color:var(--texto-suave);font-size:14px'>Resuelta por administración dentro del plazo de 48 horas, con base en la evidencia de la sesión.</p>")
         + "</div>";
+    }).join("");
+  }
+
+  function renderAdminTutors(){
+    var box = $("adminTutorsList"); if (!box) return;
+    var empty = $("adminTutorsEmpty"); if (empty) empty.hidden = tutors.length > 0;
+    box.innerHTML = tutors.map(function(t){
+      var state = (t.state === "suspendido") ? "suspendido" : "activo";
+      var badge = state === "activo"
+        ? "<span class='badge mod'>Activo</span>"
+        : "<span class='badge'>Suspendido</span>";
+      var classes = studentRecords.filter(function(r){ return normalizeSubject(r.tutorName) === normalizeSubject(t.name); });
+      var classesHtml = classes.length
+        ? "<div class='tabla-wrap'><table class='relacion'><thead><tr><th>Clase (reserva)</th><th>Materia</th><th>Alumno</th><th>Fecha y hora</th><th>Costo</th><th>Estado</th></tr></thead><tbody>"
+          + classes.map(function(r){
+              return "<tr><td><b>" + esc(r.reservaId) + "</b></td><td>" + esc(r.subject) + "</td><td>" + esc(r.studentName) + "</td><td>" + esc(r.startText) + "</td><td>$" + esc(String(r.amount)) + " MXN</td><td>" + esc(r.status) + "</td></tr>";
+            }).join("")
+          + "</tbody></table></div>"
+        : "<p class='desc'>Sin clases registradas todavía con este maestro.</p>";
+      var mods = (t.modalities || []).map(function(m){ return m === "virtual" ? "En línea" : "Presencial"; }).join(", ");
+      var slotObj = (t.slots && t.slots[0]) ? t.slots[0] : null;
+      var slot = slotObj ? fmtSlot(slotObj) : "";
+      return "<div class='card' style='margin-bottom:12px'><h3>" + esc(t.name) + " " + badge + "</h3>"
+        + "<p class='desc' style='color:var(--texto-suave);font-size:14px'><b>Materia:</b> " + esc(t.subject || "") + (mods ? " · <b>Modalidad:</b> " + esc(mods) : "") + (slot ? " · <b>Horario publicado:</b> " + esc(slot) : "") + "</p>"
+        + "<h4 style='margin:10px 0 6px'>Clases con sus alumnos</h4>" + classesHtml + "</div>";
     }).join("");
   }
 
@@ -1212,6 +1266,10 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
     if (!currentUser) {
       showResult($("bookResult"), false, "Primero <a href='#acceso'>inicia sesión</a> como estudiante para poder reservar y pagar.");
       mostrarAcceso();
+      return;
+    }
+    if (currentRole === "administrador") {
+      showResult($("bookResult"), false, "El administrador no hace reservas: solo el estudiante reserva y paga. Si quieres probar una reserva, cierra sesión y entra como estudiante.");
       return;
     }
     if (!validateFutureDates("bStart","bEnd")) {
@@ -1471,13 +1529,14 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
         + "<p class='rating'>" + rating + "</p>"
         + "<p class='meta'>Clave de tutor: <b>" + esc(t.id) + "</b></p>"
         + "<div class='spacer'></div>"
-        + "<button class='btn small' type='button' data-book-tutor='" + esc(t.id) + "'>Reservar con este tutor</button>"
+        + (currentRole === "administrador" ? "" : "<button class='btn small student-only' type='button' data-book-tutor='" + esc(t.id) + "'>Reservar con este tutor</button>")
         + "</article>";
     }).join("");
     grid.querySelectorAll("[data-book-tutor]").forEach(function(btn){
       btn.addEventListener("click", function(){ chooseTutor(btn.getAttribute("data-book-tutor")); });
     });
     syncTutorSelect();
+    if (typeof renderAdminTutors === "function") renderAdminTutors();
   }
   function renderSubjectTutors(){
     var box = $("subjectTutors");
@@ -1559,6 +1618,17 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
     renderTutors();
   }
 
+  /* Quita un maestro del directorio (Maestros disponibles, materias, reserva y
+     Administración). Se usa cuando el backend dice que no está registrado. */
+  function removeTutor(id){
+    var kept = [];
+    tutors.forEach(function(x){ if (x.id !== id) kept.push(x); });
+    if (kept.length === tutors.length) return;
+    tutors.length = 0;
+    kept.forEach(function(x){ tutors.push(x); });
+    renderTutors();
+  }
+
   var SEED_TUTORS = [
     { id: "tutor-mariana-lopez", name: "Mariana López", subject: "Cálculo", modalities: ["virtual","presencial"], slots: [{ start: "2026-11-10T16:00", end: "2026-11-10T20:00" }], rating: null, ratingCount: 0 },
     { id: "tutor-diego-hernandez", name: "Diego Hernández", subject: "Programación", modalities: ["virtual"], slots: [{ start: "2026-11-11T10:00", end: "2026-11-11T14:00" }], rating: null, ratingCount: 0 },
@@ -1573,9 +1643,15 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
     api("/tutores/" + encodeURIComponent(t.id) + "/perfil").then(function(p){
       if (p && p.name) {
         addTutor({ id: t.id, name: p.name, subject: (p.subjects && p.subjects[0]) || t.subject,
-          rating: p.average_rating, ratingCount: p.rating_count });
+          state: p.state || "activo", rating: p.average_rating, ratingCount: p.rating_count });
       }
-    }).catch(function(){ /* sin respuesta del servicio: se queda la información publicada */ });
+    }).catch(function(e){
+      /* Si el backend dice que el maestro no existe, se quita del directorio:
+         solo se muestran los maestros registrados. Si el servicio no responde
+         (por ejemplo, está despertando), se queda como está. */
+      var msg = (e && e.message) || "";
+      if (msg.indexOf("no existe") !== -1 || msg.indexOf("404") !== -1) removeTutor(t.id);
+    });
   });
 
   $("bSubject").addEventListener("input", renderSubjectTutors);
@@ -1601,6 +1677,7 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
       addTutor({ id: id, name: p.name || known.name || id,
         subject: (p.subjects && p.subjects[0]) || known.subject || "",
         modalities: known.modalities || [], slots: known.slots || [],
+        state: p.state || known.state || "activo",
         rating: p.average_rating, ratingCount: p.rating_count });
       $("fSubject").value = ""; $("fMod").value = ""; renderTutors();
       showResult(result, true, "Tutor encontrado: <b>" + esc(p.name || id) + "</b>. Ya aparece en el directorio de arriba y puedes reservar con él o ella desde su tarjeta.");
@@ -1618,6 +1695,10 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
       mostrarAcceso();
       return;
     }
+    if (currentRole === "administrador") {
+      showResult(result, false, "El administrador no abre disputas: solo las revisa en la lista de esta pantalla y las marca como resueltas. Las disputas las abre el alumno.");
+      return;
+    }
     var reservaId = $("dReserva").value.trim();
     var rec = studentRecords.filter(function(r){ return r.reservaId === reservaId; })[0];
     var d = {
@@ -1630,9 +1711,10 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
       createdText: new Date().toLocaleString("es-MX")
     };
     disputes.push(d);
+    saveList("aulaPlusDisputes", disputes);
     renderDisputes();
     renderStudents();
-    showResult(result, true, "Tu disputa quedó registrada como <span class='code'>" + esc(d.id) + "</span> y ya aparece en la lista de esta pantalla: administración la ve para revisarla con la evidencia y resolverla en máximo 48 horas. También quedó ligada a los registros del alumno en <a href='#alumnos'>Alumnos y registros</a>.");
+    showResult(result, true, "Tu disputa quedó registrada como <span class='code'>" + esc(d.id) + "</span> administración ya la ve para revisarla con la evidencia y resolverla en máximo 48 horas. También quedó ligada a los registros del alumno en <a href='#alumnos'>Alumnos y registros</a>.");
     $("disputeForm").reset();
   });
   $("disputesList").addEventListener("click", function(ev){
@@ -1642,6 +1724,7 @@ footer{margin-top:36px;border-top:1px solid var(--borde-suave);padding:20px 0 10
     var d = disputes.filter(function(x){ return x.id === btn.getAttribute("data-resolve-dispute"); })[0];
     if (!d) return;
     d.status = "Resuelta";
+    saveList("aulaPlusDisputes", disputes);
     renderDisputes();
     renderStudents();
   });
