@@ -1,6 +1,5 @@
 import threading
 from datetime import datetime
-
 from sqlalchemy.orm import Session, sessionmaker
 
 from ..application.ports import UnitOfWork
@@ -13,7 +12,6 @@ from .repositories import (
     SqlSesionRepository,
     SqlTutorRepository,
 )
-
 
 class _Active(UnitOfWork):
     """Una transacción en curso (una sesión SQL). Es por-uso, por lo tanto segura entre hilos."""
@@ -37,7 +35,8 @@ class _Active(UnitOfWork):
     def commit(self):
         for agg in self._seen:  # outbox: eventos en la misma transacción
             for ev in agg.pull_events():
-                self._session.add(OutboxRow(name=ev.name, payload=ev.data, created_at=datetime.utcnow()))
+                # Utilizamos self._clock() en lugar del llamado directo para poder falsearlo en las pruebas
+                self._session.add(OutboxRow(name=ev.name, payload=ev.data, created_at=self._clock()))
         self._session.commit()
 
     def rollback(self):
@@ -46,7 +45,6 @@ class _Active(UnitOfWork):
 
 class SqlUnitOfWork(UnitOfWork):
     """Fábrica de transacciones: `with uow as tx:` abre una nueva y la cierra al salir.
-
     Usa una pila por hilo para que `__exit__` cierre exactamente la transacción que abrió `__enter__`.
     """
 
@@ -70,4 +68,3 @@ class SqlUnitOfWork(UnitOfWork):
 
     def rollback(self):  # pragma: no cover
         self._local.stack[-1].rollback()
-
