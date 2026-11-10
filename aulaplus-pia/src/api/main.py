@@ -38,6 +38,13 @@ def require(*allowed: Role):
 def create_app(container: Container | None = None, clock: Callable[[], datetime] = datetime.utcnow) -> FastAPI:
     app = FastAPI(title="AulaPlus API", version="1.0.0", openapi_tags=TAGS,
                   description="Plataforma de tutorías académicas: reservas, pagos, sesiones y disputas.")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     c = container or build_container(Settings.from_env(), clock)
     app.state.container = c
 
