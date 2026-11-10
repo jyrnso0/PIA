@@ -18,7 +18,7 @@ from .repositories import (
 class _Active(UnitOfWork):
     """Una transacción en curso (una sesión SQL). Es por-uso, por lo tanto segura entre hilos."""
 
-    def __init__(self, factory: sessionmaker):
+    def __init__(self, factory: sessionmaker, clock=dateime.utcnow):
         self._session: Session = factory()
         self._seen: list = []
         s, seen = self._session, self._seen
@@ -49,7 +49,7 @@ class SqlUnitOfWork(UnitOfWork):
     Usa una pila por hilo para que `__exit__` cierre exactamente la transacción que abrió `__enter__`.
     """
 
-    def __init__(self, factory: sessionmaker):
+    def __init__(self, factory: sessionmaker, clock=dateime.utcnow):
         self._factory = factory
         self._local = threading.local()
 
