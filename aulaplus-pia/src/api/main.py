@@ -3,8 +3,9 @@ from datetime import date, datetime
 from typing import Callable
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
 from ..domain import errors as E
 from ..domain.value_objects import Role, Schedule
 from ..infrastructure.config import Settings
