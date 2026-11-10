@@ -182,11 +182,11 @@ class SqlPagoRepository(_Base, ports.PagoRepository):
         p.refund_reason, p.refund_responsible, p.refunded_at = r.refund_reason, r.refund_responsible, r.refunded_at
         p.refund_evidence = list(r.refund_evidence or [])
         return self._track(p)
-        
-def _init_(self, session, seen, clock=datetime.utcnow):
-        super()._init_(session, seen)
+
+    def __init__(self, session, seen, clock=datetime.utcnow):
+        super().__init__(session, seen)
         self._clock = clock
-    
+
     def save(self, p):
         self._track(p)
         self.s.merge(PagoRow(
@@ -195,7 +195,7 @@ def _init_(self, session, seen, clock=datetime.utcnow):
             tutor_share=p.breakdown.tutor_share.amount if p.breakdown else None,
             receipt=p.receipt, refunded=p.refunded.amount, refund_reason=p.refund_reason,
             refund_responsible=p.refund_responsible, refunded_at=p.refunded_at,
-            refund_evidence=p.refund_evidence, updated_at=self.utcnow()))
+            refund_evidence=p.refund_evidence, updated_at=self._clock()))
 
 
 class SqlDisputaRepository(_Base, ports.DisputaRepository):
