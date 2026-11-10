@@ -36,7 +36,7 @@ def build_container(settings: Settings | None = None, clock: Clock = datetime.ut
     engine = make_engine(settings.database_url)
     init_schema(engine)
     factory = session_factory(engine)
-    uow = SqlUnitOfWork(factory)
+    uow = SqlUnitOfWork(factory, clock)
     return Container(
         engine=engine,
         tutors=TutorService(uow, clock),
